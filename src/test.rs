@@ -1,17 +1,19 @@
-use actix_web::{get, web, HttpResponse, Result};
+use actix_web::{get, web, HttpResponse, Result,App, HttpServer, Responder};
 use serde::{Deserialize, Serialize};
+use actix_cors::Cors;
+use actix_web::http::header;
 
 // #[macro_use]
 // extern crate derive_new;
 
 #[derive(Serialize, Deserialize)]
 struct MyObj {
-    name: String,
+    content: String,
 }
 
 impl MyObj {
     fn new(name_value: String) -> MyObj {
-        MyObj { name: name_value }
+        MyObj { content: name_value }
     }
 }
 
@@ -47,7 +49,7 @@ impl MyObj {
 // }
 
 
-#[get("/a/{name}")]
+#[get("/items/{content}")]
 async fn index(_obj: web::Path<MyObj>) -> Result<HttpResponse> {
 
     // let a = MyObj {
@@ -71,7 +73,14 @@ async fn index(_obj: web::Path<MyObj>) -> Result<HttpResponse> {
 async fn main() -> std::io::Result<()> {
     use actix_web::{App, HttpServer};
 
-    HttpServer::new(|| App::new().service(index))
+    HttpServer::new(|| App::new().wrap(
+        Cors::default()
+    .allowed_origin("http://localhost:3000")
+    .allowed_methods(vec!["GET", "POST"])
+    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+    .allowed_header(header::CONTENT_TYPE)
+    .max_age(3600)
+      ).service(index))
         .bind("127.0.0.1:8080")?
         .run()
         .await
