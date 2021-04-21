@@ -17,7 +17,7 @@ impl MyObj {
     }
 }
 
-// #[derive(new)]
+// #[derive(new)]1
 // struct Book {
 //     title: String,
 //     author: String,
