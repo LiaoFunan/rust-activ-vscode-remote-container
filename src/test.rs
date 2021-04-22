@@ -1,4 +1,4 @@
-use actix_web::{get, web, HttpResponse, Result,App, HttpServer, Responder};
+use actix_web::{get, web, HttpResponse, Result};
 use serde::{Deserialize, Serialize};
 use actix_cors::Cors;
 use actix_web::http::header;
@@ -69,19 +69,42 @@ async fn index(_obj: web::Path<MyObj>) -> Result<HttpResponse> {
     Ok(HttpResponse::Ok().json(v))
 }
 
+// #[actix_web::main]
+// async fn main() -> std::io::Result<()> {
+//     use actix_web::{App, HttpServer};
+
+//     HttpServer::new(|| App::new().wrap(
+//         Cors::default()
+//     // .allowed_origin("http://localhost:3000")
+//     .allowed_methods(vec!["GET", "POST"])
+//     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+//     .allowed_header(header::CONTENT_TYPE)
+//     .max_age(3600)
+//       ).service(index))
+//         .bind("127.0.0.1:8080")?
+//         .run()
+//         .await
+// }
+
+
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     use actix_web::{App, HttpServer};
 
-    HttpServer::new(|| App::new().wrap(
-        Cors::default()
-    .allowed_origin("http://localhost:3000")
-    .allowed_methods(vec!["GET", "POST"])
-    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-    .allowed_header(header::CONTENT_TYPE)
-    .max_age(3600)
-      ).service(index))
+    HttpServer::new(|| App::new().service(index))
         .bind("127.0.0.1:8080")?
         .run()
         .await
 }
+
+// #[actix_web::main]
+// async fn main() -> std::io::Result<()> {
+//     use actix_web::{App, HttpServer};
+//     HttpServer::new(|| {
+//         App::new()
+//             .service(index)
+//     })
+//     .bind("127.0.0.1:8080")?
+//     .run()
+//     .await
+// }
